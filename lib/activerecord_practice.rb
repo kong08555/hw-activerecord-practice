@@ -22,14 +22,14 @@ class Customer < ActiveRecord::Base
     return Customer.where(first: "Candice")
   end
   def self.with_valid_email
-    return Customer.where("email = '%@%'")
+    return Customer.where("email like '%@%'")
     # YOUR CODE HERE to return only customers with valid email addresses (containing '@')
   end
   def self.with_dot_org_email
-    return Customer.where("email = '%.org'")
+    return Customer.where("email like '%.org'")
   end
   def self.with_invalid_email
-    return Customer.where("email = '%@%")
+    return Customer.where("email not like '%@%'")
   end
   def self.with_blank_email
     return Customer.where(email: nil)
@@ -38,10 +38,10 @@ class Customer < ActiveRecord::Base
     return Customer.where("Birthdate < '1980-01-01'")
   end
   def self.with_valid_email_and_born_before_1980
-    return Customer.where ("email = '%@%' AND birthdate< '1980-01-01'")
+    return Customer.where ("email like '%@%' AND birthdate< '1980-01-01'")
   end
-  def last_names_starting_with_b
-    return Customer.where("last = 'B%'").order("birthdate")
+  def self.last_names_starting_with_b
+    return Customer.where("last like 'B%'").order("birthdate")
   end
   def self.twenty_youngest
     Customer.order("birthdate DESC").limit(20)
@@ -50,7 +50,7 @@ class Customer < ActiveRecord::Base
     Customer.find_by(first: "Gussie").update(birthdate: '2004-02-08')
   end
   def self.change_all_invalid_emails_to_blank
-    Customer.where("email !='' AND email IS NOT FULL and email NOT LIKE '%@%'").update_all "email = ''"
+    Customer.where("email != '' AND email IS NOT NULL and email NOT LIKE '%@%'").update_all "email = ''"
   end
   def self.delete_meggie_herman
     Customer.find_by(:first => 'Meggie', :last => 'Herman').destroy
